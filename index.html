@@ -1,0 +1,110 @@
+<title>Random Brawler</title>
+<link
+  href="https://fonts.googleapis.com/css?family=Lilita+One&display=swap"
+  rel="stylesheet"
+/>
+<link rel="manifest" href="manifest.json" />
+<link rel="apple-touch-icon" href="/icon.png" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta http-equiv="x-ua-compatible" content="ie=edge" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+/>
+
+<div id="brawler">
+  <img id="brawler-image" />
+  <h1 id="brawler-name"></h1>
+</div>
+
+<div id="star">
+  <img id="star-image" />
+  <h2 id="star-name"></h2>
+</div>
+
+<button id="reload">RANDOM</button>
+
+<script>
+  function getBrawler() {
+    fetch('/api/brawler').then(async res => {
+      const { brawler, starPower } = await res.json()
+      const starSrc = starPower.replace(/\s/g, '-').replace(/[^a-zA-Z\-]/g, '')
+
+      const brawlerImage = document.getElementById('brawler-image')
+      const brawlerName = document.getElementById('brawler-name')
+      const starImage = document.getElementById('star-image')
+      const starName = document.getElementById('star-name')
+
+      brawlerImage.src = `https://www.starlist.pro/assets/brawler/${brawler}.png`
+      brawlerName.innerHTML = brawler
+      starImage.src = `https://www.starlist.pro/assets/star-powers/${starSrc}.png`
+      starName.innerHTML = starPower
+    })
+  }
+
+  document.getElementById('reload').addEventListener('click', getBrawler)
+
+  getBrawler()
+</script>
+
+<style>
+  * {
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Lilita One', cursive;
+    font-size: 20px;
+    background-color: #171717;
+    color: white;
+  }
+
+  html,
+  body {
+    width: 100%;
+    height: 100%;
+  }
+
+  body {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 1em;
+  }
+
+  #brawler {
+    margin-top: auto;
+  }
+
+  #brawler-image {
+    max-width: 10em;
+  }
+
+  #star {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1em 0 2em;
+  }
+
+  #star-image {
+    max-width: 3em;
+    margin-right: 0.5em;
+  }
+
+  #reload {
+    background: none;
+    border: 2px solid white;
+    font-size: 1em;
+    font-family: inherit;
+    color: inherit;
+    margin-top: auto;
+    padding: 0.5em 1em;
+    cursor: pointer;
+  }
+</style>
