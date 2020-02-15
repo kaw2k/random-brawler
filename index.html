@@ -13,37 +13,55 @@
   content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
 />
 
-<div id="brawler">
-  <img id="brawler-image" />
-  <h1 id="brawler-name"></h1>
-</div>
+<div id="brawler"></div>
+<div id="team"></div>
 
-<div id="star">
-  <img id="star-image" />
-  <h2 id="star-name"></h2>
+<div id="actions">
+  <button id="random-brawler">RANDOM BRAWLER</button>
+  <button id="random-team">RANDOM TEAM</button>
 </div>
-
-<button id="reload">RANDOM</button>
 
 <script>
-  function getBrawler() {
-    fetch('/api/brawler').then(async res => {
-      const { brawler, starPower } = await res.json()
-      const starSrc = starPower.replace(/\s/g, '-').replace(/[^a-zA-Z\-]/g, '')
+  function makeBrawlerTemplate({ brawler, starPower }) {
+    const starSrc = starPower.replace(/\s/g, '-').replace(/[^a-zA-Z\-]/g, '')
+    const starImage = `https://www.starlist.pro/assets/star-powers/${starSrc}.png`
 
-      const brawlerImage = document.getElementById('brawler-image')
-      const brawlerName = document.getElementById('brawler-name')
-      const starImage = document.getElementById('star-image')
-      const starName = document.getElementById('star-name')
+    return `
+      <div class="brawler">
+        <div class="profile">
+          <img class="image" src="https://www.starlist.pro/assets/brawler/${brawler}.png" />
+          <h1 class="name">${brawler}</h1>
+        </div>
+        <div class="star">
+          <img class="image" src="${starImage}" />
+          <h2 class="name">${starPower}</h2>
+        </div>
+      </div>
+    `
+  }
 
-      brawlerImage.src = `https://www.starlist.pro/assets/brawler/${brawler}.png`
-      brawlerName.innerHTML = brawler
-      starImage.src = `https://www.starlist.pro/assets/star-powers/${starSrc}.png`
-      starName.innerHTML = starPower
+  function getTeam() {
+    fetch('/api/team').then(async res => {
+      const team = (await res.json()).map(makeBrawlerTemplate).join('')
+      document.getElementById('team').innerHTML = team
+      document.getElementById('brawler').innerHTML = ''
     })
   }
 
-  document.getElementById('reload').addEventListener('click', getBrawler)
+  function getBrawler() {
+    fetch('/api/brawler').then(async res => {
+      document.getElementById('team').innerHTML = ''
+      document.getElementById('brawler').innerHTML = makeBrawlerTemplate(
+        await res.json()
+      )
+    })
+  }
+
+  document
+    .getElementById('random-brawler')
+    .addEventListener('click', getBrawler)
+
+  document.getElementById('random-team').addEventListener('click', getTeam)
 
   getBrawler()
 </script>
@@ -77,34 +95,67 @@
     padding: 1em;
   }
 
-  #brawler {
-    margin-top: auto;
+  button {
+    background: none;
+    border: 2px solid white;
+    font-size: 1em;
+    font-family: inherit;
+    color: inherit;
+    padding: 0.5em 1em;
+    cursor: pointer;
   }
 
-  #brawler-image {
+  #brawler,
+  #team {
+    margin: auto;
+  }
+
+  #brawler:empty,
+  #team:empty {
+    display: none;
+  }
+
+  #team {
+    display: grid;
+    font-size: 0.6em;
+    grid-template-columns: 1fr 1fr 1fr;
+    grid-gap: 1em;
+    gap: 1em;
+  }
+
+  #team .star {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    flex-flow: column;
+  }
+
+  #team .star .image {
+    margin: 0 0 1em 0;
+  }
+
+  .brawler .image {
+    width: 100%;
     max-width: 10em;
   }
 
-  #star {
+  .star {
     display: flex;
     align-items: center;
     justify-content: center;
     margin: 1em 0 2em;
   }
 
-  #star-image {
+  .star .image {
     max-width: 3em;
     margin-right: 0.5em;
   }
 
-  #reload {
-    background: none;
-    border: 2px solid white;
-    font-size: 1em;
-    font-family: inherit;
-    color: inherit;
-    margin-top: auto;
-    padding: 0.5em 1em;
-    cursor: pointer;
+  #actions {
+    display: flex;
+  }
+
+  #actions > * + * {
+    margin-left: 1em;
   }
 </style>
