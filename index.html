@@ -18,10 +18,12 @@
 <div id="map"></div>
 
 <div id="actions">
-  <button id="random-brawler">RANDOM BRAWLER</button>
-  <button id="random-team">RANDOM TEAM</button>
-  <button id="random-map">RANDOM MAP</button>
+  <button id="random-brawler">BRAWLER</button>
+  <button id="random-team">TEAM</button>
+  <button id="random-map">MAP</button>
 </div>
+
+<div id="modes"></div>
 
 <script>
   function makeBrawlerTemplate({ brawler, starPower }) {
@@ -42,12 +44,31 @@
     `
   }
 
-  function makeMapTemplate({ src, title }) {
-    console.log(src, title)
-    const mapImage = `https://www.starlist.pro/${src}`
+  function makeGameModeTemplate({mode, src}) {
+    const modeSlug = mode.split(" ").join("-").toLowerCase();
+
+    return `
+      <div class="mode">
+        <input name="mode" id="mode-${modeSlug}" value="${mode}" type="checkbox" ${mode.match(/showdown/i) ? '' : 'checked'}/>
+        <label for="mode-${modeSlug}"  style="background-image: url('https://www.starlist.pro${src}');">${mode}</label>
+      </div>
+    `;
+  }
+
+  function makeGameModes() {    
+    fetch('/api/mode').then(async res => {
+      const modes = (await(res.json())).filter((mode) => mode.friendly).map(makeGameModeTemplate).join('');
+
+      document.getElementById('modes').innerHTML = modes;
+    });
+  }
+
+  function makeMapTemplate({ src, title, mode}) {
+    const mapImage = `https://www.starlist.pro/${src}`;
 
     return `
       <div class="map">
+        <h2 class="mode">${mode}</h2>
         <img class="image" src="${mapImage}" />
         <h1 class"name">${title}</h1>
       </div>
@@ -73,7 +94,9 @@
   }
 
   function getMap() {
-    fetch('/api/map').then(async res => {
+    const modes = [...document.getElementsByName('mode')].filter(node => node.checked).map(node => node.value);
+
+    fetch(`/api/map?modes=${modes.join(',')}`).then(async res => {
       const map = makeMapTemplate(await res.json())
 
       document.getElementById('team').innnerHTML = ''
@@ -91,6 +114,7 @@
   document.getElementById('random-map').addEventListener('click', getMap)
 
   getBrawler()
+  makeGameModes();
 </script>
 
 <style>
@@ -164,7 +188,8 @@
   }
 
   .brawler .image,
-  .map .image {
+  .map .image,
+  .mode .image {
     width: 100%;
     max-width: 10em;
   }
@@ -185,7 +210,39 @@
     display: flex;
   }
 
+  #modes {
+    display: flex;
+    align-items: top;
+    justify-content: center;
+    flex-flow: row wrap;
+
+    min-width: 20rem;
+  }
+
+  #modes .mode {
+    width: 20%;
+    margin: 1rem;
+  }
+  
+  .mode label {
+    display: block;
+    background-size: cover;
+    height: 3rem;
+    line-height: 3rem;
+    -webkit-text-stroke: 1px black;
+    filter: grayscale(100%);
+    user-select: none;
+  }
+
   #actions > * + * {
     margin-left: 1em;
   }
+
+  input[type=checkbox] {
+    display: none;
+  }
+
+  input[type=checkbox]:checked ~ label {
+    filter: grayscale(0%);
+  } 
 </style>
