@@ -15,10 +15,12 @@
 
 <div id="brawler"></div>
 <div id="team"></div>
+<div id="map"></div>
 
 <div id="actions">
   <button id="random-brawler">RANDOM BRAWLER</button>
   <button id="random-team">RANDOM TEAM</button>
+  <button id="random-map">RANDOM MAP</button>
 </div>
 
 <script>
@@ -40,21 +42,44 @@
     `
   }
 
+  function makeMapTemplate({ src, title }) {
+    console.log(src, title);
+    const mapImage = `https://www.starlist.pro/${src}`;
+
+    return `
+      <div class="map">
+        <img class="image" src="${mapImage}" />
+        <h1 class"name">${title}</h1>
+      </div>
+    `;
+  }
+
   function getTeam() {
     fetch('/api/team').then(async res => {
       const team = (await res.json()).map(makeBrawlerTemplate).join('')
       document.getElementById('team').innerHTML = team
-      document.getElementById('brawler').innerHTML = ''
+      document.getElementById('brawler').innerHTML = '';
     })
   }
 
   function getBrawler() {
     fetch('/api/brawler').then(async res => {
       document.getElementById('team').innerHTML = ''
+      document.getElementById('map').innerHTML = '';
       document.getElementById('brawler').innerHTML = makeBrawlerTemplate(
         await res.json()
       )
     })
+  }
+
+  function getMap() {
+    fetch('/api/map').then(async res => {
+      const map = makeMapTemplate(await res.json());
+
+      document.getElementById('team').innnerHTML = '';
+      document.getElementById('brawler').innerHTML = '';
+      document.getElementById('map').innerHTML = map;
+    });
   }
 
   document
@@ -62,6 +87,9 @@
     .addEventListener('click', getBrawler)
 
   document.getElementById('random-team').addEventListener('click', getTeam)
+
+  document.getElementById('random-map').addEventListener('click', getMap)
+
 
   getBrawler()
 </script>
@@ -106,12 +134,14 @@
   }
 
   #brawler,
-  #team {
+  #team,
+  #map {
     margin: auto;
   }
 
   #brawler:empty,
-  #team:empty {
+  #team:empty,
+  #map:empty {
     display: none;
   }
 
@@ -134,7 +164,7 @@
     margin: 0 0 1em 0;
   }
 
-  .brawler .image {
+  .brawler .image, .map .image {
     width: 100%;
     max-width: 10em;
   }
