@@ -1,22 +1,46 @@
 import fetch from 'isomorphic-unfetch'
 import $ from 'cheerio'
 
+interface FullBrawler {
+  brawler: string
+  starPowers: string[]
+}
+
+interface PartialBrawler {
+  brawler: string
+  starPower: string
+}
+
+let BRAWLER_IDS: string[] = []
+let BRAWLERS: { [brawler: string]: FullBrawler } = {}
+
 export async function getBrawlers() {
+  if (BRAWLER_IDS.length) return BRAWLER_IDS
+
   const brawlers_url = 'https://www.starlist.pro/brawlers/'
   const $html = $(await (await fetch(brawlers_url)).text())
   const $links = $html.find(`[href^='/brawlers/detail']`)
   const brawlers = $links.toArray().map(link => link.attribs.href.split('/')[3])
+
+  BRAWLER_IDS = brawlers
   return brawlers as string[]
 }
 
-export async function getBrawler(brawler: string) {
+export async function getBrawler(brawler: string): Promise<FullBrawler> {
+  if (BRAWLERS[brawler]) return BRAWLERS[brawler]
+
   const brawler_url = `https://www.starlist.pro/brawlers/detail/${brawler}`
   const $html = $(await (await fetch(brawler_url)).text())
   const $starPowers = $html.find(`.star-power-title`)
-  return {
+
+  const fullBrawler: FullBrawler = {
     brawler,
     starPowers: $starPowers.toArray().map(x => x.children[0].data) as string[],
   }
+
+  BRAWLERS[brawler] = fullBrawler
+
+  return fullBrawler
 }
 
 export async function getMaps() {
@@ -38,7 +62,7 @@ export async function getMaps() {
   }, []);
 }
 
-export async function getRandomBrawler() {
+export async function getRandomBrawler(): Promise<PartialBrawler> {
   const brawlers = shuffle(await getBrawlers())
   const brawler = await getBrawler(brawlers[0])
 
@@ -68,5 +92,3 @@ export const shuffle = <T>(originalArray: T[]): T[] => {
 
   return array
 }
-
-
