@@ -19,6 +19,25 @@ export async function getBrawler(brawler: string) {
   }
 }
 
+export async function getMaps() {
+  const events_url = 'https://www.starlist.pro/maps/';
+  const $html = $(await (await (fetch(events_url))).text());
+  const $mapsContainers = $html.find('.row');
+
+  return $mapsContainers.toArray().reduce((res, $maps) => {
+    const event = $($maps).find('h2').text();
+    const maps = $($maps).find('.img-fluid img').toArray().map(($mapImage => {
+      return {
+        event,
+        title: $mapImage.attribs.title,
+        src: $mapImage.attribs.src
+      };
+    }))  
+    
+    return [...res, ...maps];
+  }, []);
+}
+
 export async function getRandomBrawler() {
   const brawlers = shuffle(await getBrawlers())
   const brawler = await getBrawler(brawlers[0])
@@ -49,3 +68,5 @@ export const shuffle = <T>(originalArray: T[]): T[] => {
 
   return array
 }
+
+
