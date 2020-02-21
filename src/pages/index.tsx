@@ -10,7 +10,7 @@ export default function() {
 
   return (
     <>
-      <Column>
+      <Column padded full justify="space-between">
         <Row>
           <button onClick={removeBrawler}>less</button>
           <button onClick={addBrawler}>more</button>
@@ -19,11 +19,13 @@ export default function() {
 
         {!brawlers.length && <h1>Add a brawler to get started</h1>}
 
-        <div className="brawlers">
-          {brawlers.map(brawler => (
-            <BrawlerIcon key={brawler.uuid} brawler={brawler} />
-          ))}
-        </div>
+        {!!brawlers.length && (
+          <div className="brawlers">
+            {brawlers.map(brawler => (
+              <BrawlerIcon key={brawler.uuid} brawler={brawler} />
+            ))}
+          </div>
+        )}
 
         <Row>
           <Link href="/settings">settings</Link>

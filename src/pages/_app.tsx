@@ -82,7 +82,10 @@ export default function({ Component, pageProps }: AppProps) {
           align-items: center;
           justify-content: center;
           text-align: center;
-          padding: 1em;
+        }
+
+        .svg {
+          color: white;
         }
 
         a,
