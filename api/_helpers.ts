@@ -43,23 +43,36 @@ export async function getBrawler(brawler: string): Promise<FullBrawler> {
   return fullBrawler
 }
 
-export async function getMaps() {
-  const events_url = 'https://www.starlist.pro/maps/';
+export async function getMaps(mode: string) {
+  const events_url = `https://www.starlist.pro/gamemodes/detail/${slugify(mode)}/`;
   const $html = $(await (await (fetch(events_url))).text());
-  const $mapsContainers = $html.find('.row');
+  const $enabledMaps = $html.find('.container > div').not('#disabled');
+  const $maps = $($enabledMaps).find('.map-block .card-title').toArray();
+  
+  return $maps.map(($map) => {
+    const map = $($map).text();
 
-  return $mapsContainers.toArray().reduce((res, $maps) => {
-    const event = $($maps).find('h2').text();
-    const maps = $($maps).find('.img-fluid img').toArray().map(($mapImage => {
-      return {
-        event,
-        title: $mapImage.attribs.title,
-        src: $mapImage.attribs.src
-      };
-    }))  
-    
-    return [...res, ...maps];
-  }, []);
+    return {
+      src: `/assets/map-low/${slugify(map)}.png`,
+      title: map
+    };
+  });
+}
+
+export async function getModes() {
+  const modes_url = 'https://www.starlist.pro/gamemodes/';
+  const $html = $(await (await (fetch(modes_url))).text());
+  const $modes = $html.find('.map-name').toArray();
+
+  return $modes.map(($mode) => {
+    const mode = $($mode).text();
+
+    return {
+      mode: mode,
+      src: `/assets/gamemode/header/${slugify(mode)}.png`,
+      friendly: mode !== "Boss Fight" && mode !== "Robo Rumble" && mode !== "Big Game",
+    }
+  }) as {friendly: boolean, mode: string}[]
 }
 
 export async function getRandomBrawler(): Promise<PartialBrawler> {
@@ -71,6 +84,12 @@ export async function getRandomBrawler(): Promise<PartialBrawler> {
     starPower: shuffle(brawler.starPowers)[0],
   }
 }
+
+export const slugify = (slug: string) => {
+  return slug.split(" ").map((word) => {
+    return `${word.substring(0, 1).toLocaleUpperCase()}${word.substring(1)}`
+  }).join("-");
+} 
 
 export const shuffle = <T>(originalArray: T[]): T[] => {
   let array = originalArray.slice(0)

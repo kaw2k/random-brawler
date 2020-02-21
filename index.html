@@ -18,9 +18,15 @@
 <div id="map"></div>
 
 <div id="actions">
-  <button id="random-brawler">RANDOM BRAWLER</button>
-  <button id="random-team">RANDOM TEAM</button>
-  <button id="random-map">RANDOM MAP</button>
+  <button id="random-brawler">BRAWLER</button>
+  <button id="random-team">TEAM</button>
+  <button id="random-map">MAP</button>
+</div>
+
+<div id="modes" class="hidden"></div>
+
+<div>
+  <a href="#" id="advanced">Show Advanced</a>
 </div>
 
 <script>
@@ -42,12 +48,31 @@
     `
   }
 
-  function makeMapTemplate({ src, title }) {
-    console.log(src, title)
-    const mapImage = `https://www.starlist.pro/${src}`
+  function makeGameModeTemplate({mode, src}) {
+    const modeSlug = mode.split(" ").join("-").toLowerCase();
+
+    return `
+      <div class="mode">
+        <input name="mode" id="mode-${modeSlug}" value="${mode}" type="checkbox" ${mode.match(/showdown/i) ? '' : 'checked'}/>
+        <label for="mode-${modeSlug}"  style="background-image: url('https://www.starlist.pro${src}');"><span>${mode}</span></label>
+      </div>
+    `;
+  }
+
+  function makeGameModes() {    
+    fetch('/api/mode').then(async res => {
+      const modes = (await(res.json())).filter((mode) => mode.friendly).map(makeGameModeTemplate).join('');
+
+      document.getElementById('modes').innerHTML = modes;
+    });
+  }
+
+  function makeMapTemplate({ src, title, mode}) {
+    const mapImage = `https://www.starlist.pro/${src}`;
 
     return `
       <div class="map">
+        <h2 class="mode">${mode}</h2>
         <img class="image" src="${mapImage}" />
         <h1 class"name">${title}</h1>
       </div>
@@ -73,7 +98,9 @@
   }
 
   function getMap() {
-    fetch('/api/map').then(async res => {
+    const modes = [...document.getElementsByName('mode')].filter(node => node.checked).map(node => node.value);
+
+    fetch(`/api/map?modes=${modes.join(',')}`).then(async res => {
       const map = makeMapTemplate(await res.json())
 
       document.getElementById('team').innnerHTML = ''
@@ -82,15 +109,31 @@
     })
   }
 
+  function toggleAdvanced() {
+    const $modes = document.getElementById('modes');
+
+    if ($modes.classList.contains('hidden')) {
+      window.scrollTo(0,document.body.scrollHeight);
+      $modes.classList.remove('hidden');
+      document.getElementById('advanced').innerHTML = "Hide Advanced";    
+    } else {
+      $modes.classList.add('hidden');
+      document.getElementById('advanced').innterHTML = "Show Advanced";
+    }
+  }
+
   document
     .getElementById('random-brawler')
-    .addEventListener('click', getBrawler)
+    .addEventListener('click', getBrawler);
 
-  document.getElementById('random-team').addEventListener('click', getTeam)
+  document.getElementById('random-team').addEventListener('click', getTeam);
 
-  document.getElementById('random-map').addEventListener('click', getMap)
+  document.getElementById('random-map').addEventListener('click', getMap);
 
-  getBrawler()
+  document.getElementById('advanced').addEventListener('click', toggleAdvanced);
+
+  getBrawler();
+  makeGameModes();
 </script>
 
 <style>
@@ -100,7 +143,7 @@
     box-sizing: border-box;
   }
 
-  html {
+  html, a {
     font-family: 'Lilita One', cursive;
     font-size: 20px;
     background-color: #171717;
@@ -164,7 +207,8 @@
   }
 
   .brawler .image,
-  .map .image {
+  .map .image,
+  .mode .image {
     width: 100%;
     max-width: 10em;
   }
@@ -183,9 +227,53 @@
 
   #actions {
     display: flex;
+    margin-bottom: 1rem;
+  }
+
+  #modes {
+    display: flex;
+    align-items: top;
+    justify-content: center;
+    flex-flow: row wrap;
+
+    min-width: 20rem;
+  }
+
+  #modes .mode {
+    width: 20%;
+    margin: 1rem;
+  }
+  
+  .mode label {
+    display: table;
+    background-size: cover;
+    justify-content: center;
+
+    height: 3rem;
+    width: 100%;
+    -webkit-text-stroke: 1px black;
+    filter: grayscale(100%);
+    user-select: none;
+  }
+
+  .mode label span { 
+    display: table-cell;
+    vertical-align: middle;
   }
 
   #actions > * + * {
     margin-left: 1em;
+  }
+
+  input[type=checkbox] {
+    display: none;
+  }
+
+  input[type=checkbox]:checked ~ label {
+    filter: grayscale(0%);
+  } 
+
+  .hidden {
+    display: none !important;
   }
 </style>
