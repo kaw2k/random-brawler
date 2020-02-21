@@ -113,6 +113,7 @@
     const $modes = document.getElementById('modes');
 
     if ($modes.classList.contains('hidden')) {
+      window.scrollTo(0,document.body.scrollHeight);
       $modes.classList.remove('hidden');
       document.getElementById('advanced').innerHTML = "Hide Advanced";    
     } else {
