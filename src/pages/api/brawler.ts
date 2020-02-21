@@ -3,9 +3,20 @@ import { getBrawlers } from './_helpers/getBrawlers'
 import { getBrawler } from './_helpers/getBrawler'
 import { NextApiRequest, NextApiResponse } from 'next'
 
-export default async function(req: NextApiRequest, res: NextApiResponse) {
-  const brawlers = shuffle(await getBrawlers())
-  const brawler = await getBrawler(brawlers[0])
+export interface BrawlersAPIQuery {
+  count?: number
+  filter?: string[]
+}
 
-  return res.send([brawler])
+export default async function(req: NextApiRequest, res: NextApiResponse) {
+  const { count = 1, filter = [] } = req.query as BrawlersAPIQuery
+
+  const brawlers = await Promise.all(
+    shuffle(await getBrawlers())
+      .filter(b => !filter.includes(b))
+      .slice(0, count)
+      .map(async b => getBrawler(b))
+  )
+
+  return res.send(brawlers)
 }

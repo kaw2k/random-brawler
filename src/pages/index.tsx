@@ -6,7 +6,9 @@ import { Row } from '../components/layouts/row'
 import { Column } from '../components/layouts/column'
 
 export default function() {
-  const { brawlers, addBrawler, removeBrawler } = useContext(Context)
+  const { brawlers, addBrawler, removeBrawler, refreshBrawlers } = useContext(
+    Context
+  )
 
   return (
     <>
@@ -14,7 +16,7 @@ export default function() {
         <Row>
           <button onClick={removeBrawler}>less</button>
           <button onClick={addBrawler}>more</button>
-          <button>refresh</button>
+          <button onClick={refreshBrawlers}>refresh</button>
         </Row>
 
         {!brawlers.length && <h1>Add a brawler to get started</h1>}

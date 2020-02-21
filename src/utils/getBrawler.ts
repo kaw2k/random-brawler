@@ -1,9 +1,7 @@
 import { Brawler } from '../types/brawler'
+import { BrawlersAPIQuery } from '../pages/api/brawler'
+import { ajax } from './ajax'
 
-export async function getBrawler(options?: {
-  count?: number
-  repeats?: boolean
-  filter?: string[]
-}) {
-  return (await (await fetch('/api/brawler')).json()) as Brawler[]
+export async function getBrawler(options?: BrawlersAPIQuery) {
+  return ajax.get<Brawler[]>('/api/brawler', options)
 }

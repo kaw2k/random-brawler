@@ -17,7 +17,9 @@ export default function({ Component, pageProps }: AppProps) {
   }
 
   async function refreshBrawler(brawler: Brawler) {
-    const newBrawler = await getBrawler()
+    const newBrawler = await getBrawler({
+      filter: [brawler.brawler, brawler.brawler],
+    })
     setBrawlers(
       brawlers.map(b => (b.uuid === brawler.uuid ? newBrawler[0] : b))
     )
