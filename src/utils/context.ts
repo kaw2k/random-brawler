@@ -4,7 +4,7 @@ import { Brawler } from '../types/brawler'
 export interface ContextState {
   brawlers: Brawler[]
   addBrawler: () => void
-  removeBrawler: () => void
+  removeBrawler: (brawler: Brawler) => void
   refreshBrawler: (brawler: Brawler) => void
   refreshBrawlers: () => void
 }
@@ -12,7 +12,7 @@ export interface ContextState {
 export const Context = React.createContext<ContextState>({
   brawlers: [],
   addBrawler() {},
-  removeBrawler() {},
+  removeBrawler(brawler) {},
   refreshBrawler(brawler) {},
   refreshBrawlers() {},
 })

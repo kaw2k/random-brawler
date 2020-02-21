@@ -8,8 +8,8 @@ import { getBrawler } from '../utils/getBrawler'
 export default function({ Component, pageProps }: AppProps) {
   const [brawlers, setBrawlers] = useState<Brawler[]>([])
 
-  function removeBrawler() {
-    setBrawlers(brawlers.slice(0, -1))
+  function removeBrawler(brawler: Brawler) {
+    setBrawlers(brawlers.filter(b => b.uuid !== brawler.uuid))
   }
 
   async function addBrawler() {

@@ -4,6 +4,7 @@ import { Context } from '../utils/context'
 import { Link } from '../components/atoms/link'
 import { Row } from '../components/layouts/row'
 import { Column } from '../components/layouts/column'
+import { IconButton } from '../components/atoms/iconButton'
 
 export default function() {
   const { brawlers, addBrawler, removeBrawler, refreshBrawlers } = useContext(
@@ -14,9 +15,8 @@ export default function() {
     <>
       <Column padded full justify="space-between">
         <Row>
-          <button onClick={removeBrawler}>less</button>
-          <button onClick={addBrawler}>more</button>
-          <button onClick={refreshBrawlers}>refresh</button>
+          <IconButton onClick={addBrawler} icon="add-person" />
+          <IconButton onClick={refreshBrawlers} icon="refresh" />
         </Row>
 
         {!brawlers.length && <h1>Add a brawler to get started</h1>}
@@ -30,7 +30,7 @@ export default function() {
         )}
 
         <Row>
-          <Link href="/settings">settings</Link>
+          <Link href="/settings">SETTINGS</Link>
         </Row>
       </Column>
 
@@ -46,10 +46,3 @@ export default function() {
     </>
   )
 }
-
-// <BrawlerIcon
-//   brawler={{
-//     brawler: 'Tara',
-//     starPowers: ['Black-Portal', 'Healing-Shade'],
-//   }}
-// />
