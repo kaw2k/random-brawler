@@ -1,3 +1,9 @@
+:root {
+  --spacing: 1em;
+  --icon: 2em;
+  --icon-large: 3em;
+}
+
 /*=========================================
               RESETS / GENERAL
   =========================================*/
@@ -7,8 +13,7 @@
   box-sizing: border-box;
 }
 
-html,
-a {
+html {
   font-family: 'Lilita One', cursive;
   font-size: 20px;
   background-color: #171717;
@@ -21,15 +26,6 @@ body {
   min-height: 100%;
 }
 
-body {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 1em;
-}
-
 /*=========================================
                   COMPONENTS
   =========================================*/
@@ -40,88 +36,79 @@ button {
   font-family: inherit;
   color: inherit;
   cursor: pointer;
+  display: block;
+  width: 100%;
 }
 
-#brawler,
-#team,
-#map {
-  margin: auto;
+img {
+  width: 100%;
 }
 
-#brawler:empty,
-#team:empty,
-#map:empty {
-  display: none;
+/* ------- Icon Buttons ------- */
+.icon-button {
+  width: var(--icon);
+  height: var(--icon);
 }
 
+/* ------- Text Labels ------- */
+.label {
+  display: flex;
+  align-items: center;
+}
+
+.label img {
+  width: var(--icon);
+  margin-right: 0.5em;
+}
+
+/* ------- Info Blocks ------- */
+.info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: left;
+}
+
+/*=========================================
+                ACTIONS
+  =========================================*/
+#actions {
+  display: flex;
+  justify-content: center;
+}
+
+#actions > * + * {
+  margin-left: var(--spacing);
+}
+
+/*=========================================
+                BRAWLER
+  =========================================*/
 #team {
   display: grid;
   font-size: 0.6em;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 1em;
-  gap: 1em;
+  grid-gap: var(--spacing);
+  gap: var(--spacing);
 }
-
-#team .star {
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  flex-flow: column;
-}
-
-#team .star .image {
-  margin: 0 0 1em 0;
-}
-
-.brawler .image,
-.map .image,
-.mode label {
-  width: 100%;
-  max-width: 10em;
-}
-
-.map {
+.brawler {
   position: relative;
 }
 
-.map .map-mode {
+.remove {
   position: absolute;
-  width: 3em;
-  top: -0.5em;
-  left: -0.5em;
-}
-
-.star {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin: 1em 0 2em;
-}
-
-.star .image {
-  max-width: 3em;
-  margin-right: 0.5em;
-}
-
-#actions {
-  display: flex;
-  margin-bottom: 1rem;
-}
-
-#actions > * + * {
-  margin-left: 1em;
+  top: 0;
+  right: 0;
+  width: var(--icon-large);
+  height: var(--icon-large);
 }
 
 /*=========================================
-                COMPONENTS
+                MAP
   =========================================*/
-.icon-button {
-  width: 2em;
-  height: 2em;
-}
-
-.icon-button img {
-  width: 100%;
+.map {
+  position: relative;
 }
 
 /*=========================================
@@ -131,19 +118,19 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  flex-flow: row wrap;
+  flex-flow: column;
+}
+
+#modes > * + * {
+  margin-top: var(--spacing);
 }
 
 .mode label {
   display: block;
-  width: 3em;
+  width: var(--icon-large);
   filter: grayscale(100%);
   opacity: 0.25;
   user-select: none;
-}
-
-.mode img {
-  width: 100%;
 }
 
 input[type='checkbox'] {
@@ -161,7 +148,6 @@ input[type='checkbox']:checked ~ label {
 
 #actions {
   grid-area: actions;
-  justify-content: center;
 }
 #team {
   grid-area: team;
@@ -175,14 +161,12 @@ input[type='checkbox']:checked ~ label {
 
 body {
   display: grid;
-  grid-gap: 1em;
-  gap: 1em;
+  grid-gap: var(--spacing);
+  gap: var(--spacing);
+  grid-template-columns: 1fr auto;
   grid-template-areas:
     'actions actions'
     'team team'
     'map modes';
-}
-
-#modes {
-  flex-flow: column;
+  padding: var(--spacing);
 }

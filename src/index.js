@@ -112,14 +112,16 @@ function Brawler(brawler) {
             class="image"
             src="https://www.starlist.pro/assets/brawler/${brawler.brawler}.png"
           />
-          <h1 class="name">${brawler.brawler}</h1>
-        </div>
-        <div class="star">
-          <img class="image" src="${starImage}" />
-          <h2 class="name">${brawler.starPower}</h2>
+          <div class="info">
+            <h1 class="name">${brawler.brawler}</h1>
+            <h3 class="label">
+              <img src="${starImage}" />
+              ${brawler.starPower}
+            </h3>
+          </div>
         </div>
       </button>
-      <button class="icon-button" onclick="remove(${brawler.uuid})">
+      <button class="icon-button remove" onclick="remove(${brawler.uuid})">
         <img src="/assets/remove.svg" />
       </button>
     </div>
@@ -167,8 +169,8 @@ function GameMap(gameMap) {
   return html`
     <button class="map" onclick="newmap()">
       <img class="image" src="${mapImage}" />
-      <img class="map-mode" src="https://www.starlist.pro/${modeSrc}" />
-      <h2 class="name">
+      <h2 class="info label">
+        <img src="https://www.starlist.pro/${modeSrc}" />
         ${title}
       </h2>
     </button>
