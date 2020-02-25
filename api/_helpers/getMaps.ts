@@ -1,5 +1,6 @@
 import $ from 'cheerio'
 import { slugify } from './slugify'
+import fetch from 'isomorphic-unfetch'
 
 export async function getMaps(mode: string) {
   const events_url = `https://www.starlist.pro/gamemodes/detail/${slugify(

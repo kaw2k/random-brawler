@@ -1,9 +1,9 @@
 import { getModes } from './_helpers/getModes'
-import { shuffle } from '../../utils/shuffle'
+import { shuffle } from '../src/shuffle'
 import { getMaps } from './_helpers/getMaps'
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NowRequest, NowResponse } from '@now/node'
 
-export default async function(req: NextApiRequest, res: NextApiResponse) {
+export default async function(req: NowRequest, res: NowResponse) {
   const modes = req.query.modes
     ? (req.query.modes as string).split(',')
     : (await getModes()).map(({ mode }) => mode)

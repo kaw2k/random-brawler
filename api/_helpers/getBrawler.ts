@@ -1,6 +1,8 @@
 import $ from 'cheerio'
-import { Brawler } from '../../../types/brawler'
+import { Brawler } from '../../old_src/types/brawler'
 import { uuid } from './uuid'
+import fetch from 'isomorphic-unfetch'
+import { shuffle } from '../../src/shuffle'
 
 let BRAWLERS: { [brawler: string]: Brawler } = {}
 
@@ -14,7 +16,9 @@ export async function getBrawler(brawler: string): Promise<Brawler> {
   const fullBrawler: Brawler = {
     uuid: uuid(),
     brawler,
-    starPowers: $starPowers.toArray().map(x => x.children[0].data) as string[],
+    starPower: shuffle(
+      $starPowers.toArray().map(x => x.children[0].data) as string[]
+    )[0],
   }
 
   BRAWLERS[brawler] = fullBrawler

@@ -1,0 +1,152 @@
+/*=========================================
+              RESETS / GENERAL
+  =========================================*/
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+html,
+a {
+  font-family: 'Lilita One', cursive;
+  font-size: 20px;
+  background-color: #171717;
+  color: white;
+}
+
+html,
+body {
+  min-width: 100%;
+  min-height: 100%;
+}
+
+body {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 1em;
+}
+
+/*=========================================
+                  COMPONENTS
+  =========================================*/
+button {
+  background: none;
+  border: none;
+  font-size: 1em;
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+#brawler,
+#team,
+#map {
+  margin: auto;
+}
+
+#brawler:empty,
+#team:empty,
+#map:empty {
+  display: none;
+}
+
+#team {
+  display: grid;
+  font-size: 0.6em;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 1em;
+  gap: 1em;
+}
+
+#team .star {
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  flex-flow: column;
+}
+
+#team .star .image {
+  margin: 0 0 1em 0;
+}
+
+.brawler .image,
+.map .image,
+.mode label {
+  width: 100%;
+  max-width: 10em;
+}
+
+.star {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1em 0 2em;
+}
+
+.star .image {
+  max-width: 3em;
+  margin-right: 0.5em;
+}
+
+#actions {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+#actions > * + * {
+  margin-left: 1em;
+}
+
+/*=========================================
+                COMPONENTS
+  =========================================*/
+.icon-button {
+  width: 2em;
+  height: 2em;
+}
+
+.icon-button img {
+  width: 100%;
+}
+
+/*=========================================
+                    MODES
+  =========================================*/
+#modes {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-flow: row wrap;
+}
+
+.mode label {
+  display: block;
+  width: 3em;
+  filter: grayscale(100%);
+  opacity: 0.25;
+  user-select: none;
+}
+
+.mode img {
+  width: 100%;
+}
+
+input[type='checkbox'] {
+  display: none;
+}
+
+input[type='checkbox']:checked ~ label {
+  filter: grayscale(0%);
+  opacity: 1;
+}
+
+/*=========================================
+                    HELPERS
+  =========================================*/
+.hidden {
+  display: none !important;
+}

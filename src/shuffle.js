@@ -1,4 +1,12 @@
-export const shuffle = <T>(originalArray: T[]): T[] => {
+// @ts-check
+
+/**
+ *
+ * @template T
+ * @param {T[]} originalArray
+ * @returns {T[]}
+ */
+export function shuffle(originalArray) {
   let array = originalArray.slice(0)
   let currentIndex = array.length,
     temporaryValue,
