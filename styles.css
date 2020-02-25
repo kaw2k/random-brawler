@@ -80,6 +80,17 @@ button {
   max-width: 10em;
 }
 
+.map {
+  position: relative;
+}
+
+.map .map-mode {
+  position: absolute;
+  width: 3em;
+  top: -0.5em;
+  left: -0.5em;
+}
+
 .star {
   display: flex;
   align-items: center;
@@ -145,8 +156,33 @@ input[type='checkbox']:checked ~ label {
 }
 
 /*=========================================
-                    HELPERS
+                    RESPONSIVE
   =========================================*/
-.hidden {
-  display: none !important;
+
+#actions {
+  grid-area: actions;
+  justify-content: center;
+}
+#team {
+  grid-area: team;
+}
+#map {
+  grid-area: map;
+}
+#modes {
+  grid-area: modes;
+}
+
+body {
+  display: grid;
+  grid-gap: 1em;
+  gap: 1em;
+  grid-template-areas:
+    'actions actions'
+    'team team'
+    'map modes';
+}
+
+#modes {
+  flex-flow: column;
 }

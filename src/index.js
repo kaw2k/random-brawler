@@ -1,11 +1,5 @@
 // @ts-check
-
-import { shuffle } from './shuffle.js'
 import { html } from './html.js'
-
-// ============================================================
-// TYPES
-// ============================================================
 
 /**
  * @typedef {Object} Brawler
@@ -19,6 +13,7 @@ import { html } from './html.js'
  * @property {string} mode
  * @property {string} src
  * @property {string} title
+ * @property {string} modeSrc
  */
 
 /**
@@ -166,40 +161,31 @@ function GameMode(gameMode) {
  * @returns {string}
  */
 function GameMap(gameMap) {
-  const { mode, src, title } = gameMap
+  const { mode, src, modeSrc, title } = gameMap
   const mapImage = `https://www.starlist.pro/${src}`
 
   return html`
-    <div class="map">
-      <h2 class="mode">${mode}</h2>
+    <button class="map" onclick="newmap()">
       <img class="image" src="${mapImage}" />
-      <h1 class="name">${title}</h1>
-    </div>
+      <img class="map-mode" src="https://www.starlist.pro/${modeSrc}" />
+      <h2 class="name">
+        ${title}
+      </h2>
+    </button>
   `
 }
 
 // ============================================================
 // INIT
 // ============================================================
-
-// Refresh the map when clicked
-document
-  .getElementById('map')
-  .addEventListener('click', () => getMap().then(map => (STATE.map = map)))
-
-// document.getElementById('team').addEventListener('click', async e => {
-//   const brawler = e.target.closest('.brawler')
-//   if (brawler) {
-//     document.getElementById(brawler.id).innerHTML = Brawler(
-//       (await getBrawler())[0]
-//     )
-//   }
-// })
-
 // Fetch data
 getModes()
   .then(modes => (STATE.modes = modes))
   .then(() => getMap().then(map => (STATE.map = map)))
+
+window.newmap = async function() {
+  getMap().then(map => (STATE.map = map))
+}
 
 window.remove = async function(uuid) {
   STATE.brawlers = STATE.brawlers.filter(b => b.uuid != uuid)
