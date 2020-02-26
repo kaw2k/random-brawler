@@ -1,6 +1,15 @@
 // @ts-check
 import { html } from './html.js'
 
+const pluck = (array, key) => array.map((obj) => obj[key]);
+const querify = (href, params) => {
+  const url = new URL(href, window.location.href);
+
+  Object.keys(params).forEach(key => url.searchParams.append(key, params[key]));
+
+  return `${url}`;
+}
+
 /**
  * @typedef {Object} Brawler
  * @property {string} uuid
@@ -78,16 +87,22 @@ function getMap() {
   const modes = [...document.getElementsByName('mode')]
     .filter(node => node.checked)
     .map(node => node.value)
+    .join(',')
 
-  return fetch(`/api/map?modes=${modes.join(',')}`).then(res => res.json())
+  return fetch(querify(`/api/map`, {modes})).then(res => res.json())
 }
 
 /**
  * @param {number} count
  * @returns {Promise<Brawler[]>}
  */
-function getBrawler(count = 1) {
-  return fetch(`/api/brawler?count=${count}`).then(res => res.json())
+function getBrawler(count = 1, unique = true) {
+  const queryParams = {
+    count,
+    ...(unique && STATE.brawlers.length ? {filter: pluck(STATE.brawlers, 'brawler')}: {})
+  }
+
+  return fetch(querify('/api/brawler', queryParams)).then(res => res.json())
 }
 
 // ============================================================
