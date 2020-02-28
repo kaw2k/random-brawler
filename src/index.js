@@ -45,9 +45,24 @@ const STATE = {
   },
   set brawlers(brawlers) {
     this._brawlers = brawlers
-    document.getElementById('team').innerHTML = this.brawlers
-      .map(Brawler)
+    document.getElementById('team1').innerHTML = this.brawlers
+      .map((brawler, index) => (index % 2) ? null : Brawler(brawler))
       .join('')
+    document.getElementById('team2').innerHTML = this.brawlers
+      .map((brawler, index) => (index % 2) ? Brawler(brawler) : null)
+      .join('')
+
+    if (brawlers.length > 6) {
+      document.getElementById('teams').classList.add('many');
+    } else {
+      document.getElementById('teams').classList.remove('many');
+    }
+
+    if (brawlers.length >= 10) {
+      document.getElementById('add').disabled = true;
+    } else {
+      document.getElementById('add').disabled = false;
+    }
   },
 
   _map: null,
@@ -128,7 +143,6 @@ function Brawler(brawler) {
             src="https://www.starlist.pro/assets/brawler/${brawler.brawler}.png"
           />
           <div class="info">
-            <h1 class="name">${brawler.brawler}</h1>
             <h3 class="label">
               <img src="${starImage}" />
               ${brawler.starPower}
@@ -214,7 +228,7 @@ window.reload = async function(uuid) {
 }
 
 window.refresh = async function() {
-  const count = document.getElementById('team').childElementCount
+  const count = STATE.brawlers.length;
   STATE.brawlers = await getBrawler(count)
 }
 

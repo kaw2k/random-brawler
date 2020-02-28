@@ -82,17 +82,27 @@ img {
   margin-left: var(--spacing);
 }
 
+button:disabled {
+  opacity: .5;
+}
+
 /*=========================================
                 BRAWLER
   =========================================*/
-#team {
+#teams {
   display: grid;
   font-size: 0.6em;
   grid-template-columns: 1fr 1fr 1fr;
   grid-gap: var(--spacing);
   gap: var(--spacing);
+  justify-content: center;
 }
-.brawler {
+
+#team1, #team2 {
+  display: contents;
+}
+
+.brawler, .profile {
   position: relative;
 }
 
@@ -127,7 +137,7 @@ img {
 
 .mode label {
   display: block;
-  width: var(--icon-large);
+  width: var(--icon);
   filter: grayscale(100%);
   opacity: 0.25;
   user-select: none;
@@ -149,11 +159,11 @@ input[type='checkbox']:checked ~ label {
 #actions {
   grid-area: actions;
 }
-#team {
-  grid-area: team;
-}
 #map {
   grid-area: map;
+}
+#teams {
+  grid-area: teams;
 }
 #modes {
   grid-area: modes;
@@ -166,7 +176,77 @@ body {
   grid-template-columns: 1fr auto;
   grid-template-areas:
     'actions actions'
-    'team team'
+    'teams teams'
     'map modes';
   padding: var(--spacing);
+}
+
+#teams.many {
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  font-size: .4rem;
+}
+
+@media screen and (min-width: 500px) {
+  body { 
+    grid-template-areas: 
+    'actions actions actions actions'
+    'team-1 map map team-2'
+    'modes modes modes modes';
+    grid-template-columns: auto;
+  }
+  
+  #modes {
+    align-items: center;
+    flex-flow: row;
+  }
+
+  #teams {
+    display: contents;
+  }
+
+  #teams.many {
+    font-size: initial;
+  }
+
+  #map {
+    justify-self: center;
+    align-self: center;
+    max-width: 475px;
+  }
+
+  #team1, #team2 {
+    display: grid;
+    justify-self: center;
+    align-items: center;
+    grid-auto-flow: column;
+    grid-template-rows: repeat(5, auto);
+    align-content: start;
+    gap: var(--spacing);
+  }
+
+  #teams many
+
+  .brawler {
+    width: 120px;
+  }
+}
+
+@media screen and (min-width: 900px) {
+  #team1, #team2 {
+    grid-template-rows: repeat(3, auto);
+  }
+
+  .brawler {
+    width: 140px;
+  }
+}
+
+@media screen and (min-width: 1280px) {
+  #team1, #team2 {
+    grid-template-rows: repeat(3, auto);
+  }
+
+  .brawler {
+    width: 200px;
+  }
 }
